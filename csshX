@@ -502,7 +502,13 @@ sub open_window {
     my $cmd = join ' ', map { s/(["'])/\\$1/g; "'$_'" } @args;
 
     # don't exec if debugging so we can see errors
-    $cmd = "clear && exec $cmd" unless $config->debug;
+    unless ($config->debug) {
+        if (get_shell =~ /fish$/) {
+            $cmd = "clear; and exec $cmd" unless $config->debug;
+        } else {
+            $cmd = "clear && exec $cmd" unless $config->debug;
+        }
+    }
 
     # Hide the command from any shell history
 
